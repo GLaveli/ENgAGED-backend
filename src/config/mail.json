@@ -2,5 +2,7 @@
   "host": "smtp.mailtrap.io",
   "port": "2525",
   "user": "fafac5d7e33ec9",
-  "pass": "135a1e532c21f2"
+  "pass": "135a1e532c21f2",
+  "guser":"g.laveli.p@gmail.com",
+  "gpass":"Minhas_memorias1"
 }

@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const mailer = require('../../modules/mailer');
 
 const authConfig = require('../../config/auth');
 const User = require('../models/User');
@@ -79,15 +80,15 @@ router.post('/autenticate', async (req, res) => {
   })
 });
 
-//rota de senha perdida
-
+//rota para o envio de email de senha perdida
 router.post('/forgot_password', async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await User.findOne(email);
-    if (!use)
-      return res.status(400).send('Email não encontrado');
+    const user = await User.findOne({ email });
+
+    if (!user)
+      return res.status(400).send({ error: 'Email não encontrado' });
 
     //Gera um token de 20 caracteres utilizando o crypto
     const cryptoken = crypto.randomBytes(20).toString('hex');
@@ -103,11 +104,42 @@ router.post('/forgot_password', async (req, res) => {
       }
     });
 
-    // https://www.youtube.com/watch?v=Zwdv9RllPqU em 16:11
-    console.log(cryptoken, now);
+    mailer.sendMail({
+      from: 'g.laveli.p@gmail.com',
+      to: 'g.laveli.p@gmail.com',
+      subject: 'Sending Email using Node.js',
+      html: '</p> Codigo de validação para recuprar sua senha: </p> ' + cryptoken
+    },
+      (err) => {
 
-  } catch (error) {
-    res.status(400).send({ error: 'Uma falha ocorreu durante o proceso tente de novoem instantes!: ', error });
+        if (err)
+          return res.status(400).send({ error: 'Não é posivel fazer o envio do email ' });
+
+        return res.send();
+
+      });
+
+  } catch (err) {
+    console.log(err);
+    res.status(400).send({ error: 'Uma falha ocorreu durante o proceso tente de novoem instantes!: ' });
+  }
+
+});
+
+//rota para resetar a senha
+router.post('/reset_password', async (req, res) => {
+
+  const { email, token, password } = req.body;
+
+  try {
+
+    const user = await User.findOne({ email })
+      .select('+passwordResetToken passwordResetExpires');
+
+  } catch (err) {
+
+    res.status(400).send({ error: 'Não foi possivel resetar a senha, tente novamente' })
+
   }
 
 });
