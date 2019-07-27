@@ -49,7 +49,7 @@ router.post('/register', async (req, res) => {
     });
 
   } catch (err) {
-
+    console.log(err);
     //caso ocorra um erro durante o processo de entrada do try é gerado o status 400 com aviso
     return res.status(400).send({ error: 'Falha de registro' });
   }
@@ -107,8 +107,8 @@ router.post('/forgot_password', async (req, res) => {
     mailer.sendMail({
       from: 'g.laveli.p@gmail.com',
       to: 'g.laveli.p@gmail.com',
-      subject: 'Sending Email using Node.js',
-      html: '</p> Codigo de validação para recuprar sua senha: </p> ' + cryptoken
+      subject: 'Codigo de alteração de senha',
+      html: '<h1>Olá </h1>' + user.nome + '</p> Aqui esta o seu codigo para resetar a sua senha! </p> ' + '<p>Token: <strong>' + cryptoken + '</strong></p>'
     },
       (err) => {
 
@@ -136,8 +136,26 @@ router.post('/reset_password', async (req, res) => {
     const user = await User.findOne({ email })
       .select('+passwordResetToken passwordResetExpires');
 
-  } catch (err) {
+    if (!user)
+      return resizeTo.status(400).send({ error: 'Usuario nao encontrado' });
 
+    if (token !== user.passwordResetToken)
+      return res.status(400).send({ error: 'Token invalido' })
+
+    const now = new Date();
+
+    if (now > user.passwordResetExpires)
+      return res.status(400).send({ error: 'Tolken fora de validade!' });
+
+    user.password = password;
+
+    await user.save();
+
+
+    res.send();
+
+  } catch (err) {
+    console.log(err);
     res.status(400).send({ error: 'Não foi possivel resetar a senha, tente novamente' })
 
   }
