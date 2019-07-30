@@ -20,7 +20,15 @@ function generateTolken(params = {}) {
 
 }
 
-//Rota de registro, onde é chegado no documento se o email cadastrado é existente
+router.get('/users', async (req, res) => {
+
+  const { page = 1 } = req.query;
+  const users = await User.paginate({}, { page, limit: 4 })
+
+  return res.json(users)
+});
+
+//Rota de registro, onde é checado no documento se o email cadastrado é existente
 router.post('/register', async (req, res) => {
 
   //Esta constanten recebe as informaçoes vindas do DOM informadas pelo usuario.
@@ -56,10 +64,11 @@ router.post('/register', async (req, res) => {
 });
 
 //rota de autenticação
-router.post('/autenticate', async (req, res) => {
+router.post('/authenticate', async (req, res) => {
 
   //Pega as informaçoes da requisição (email e senha)
   const { email, password } = req.body;
+
   //pega os dados recebidos e verifica no banco de dados se existe algum documento existente
   const user = await User.findOne({ email }).select('+password');
 
@@ -82,6 +91,7 @@ router.post('/autenticate', async (req, res) => {
 
 //rota para o envio de email de senha perdida
 router.post('/forgot_password', async (req, res) => {
+
   const { email } = req.body;
 
   try {
@@ -108,7 +118,7 @@ router.post('/forgot_password', async (req, res) => {
       from: 'g.laveli.p@gmail.com',
       to: 'g.laveli.p@gmail.com',
       subject: 'Codigo de alteração de senha',
-      html: '<h1>Olá </h1>' + user.nome + '</p> Aqui esta o seu codigo para resetar a sua senha! </p> ' + '<p>Token: <strong>' + cryptoken + '</strong></p>'
+      html: '<h1>ENgAGED </h1>' + 'Olá ' + user.nome + '<p> Aqui esta o seu token para resetar a sua senha! </p> ' + '<p>Token: <strong>' + cryptoken + '</strong></p>'
     },
       (err) => {
 
