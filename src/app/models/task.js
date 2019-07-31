@@ -1,12 +1,12 @@
 const mongoose = require('../../database');
-
+const paginate = require('mongoose-paginate-v2');
 const TaskSchema = new mongoose.Schema({
 
   title: {
     type: String,
     required: true,
   },
-  taskDescription: {
+  description: {
     type: String,
     required: true,
   },
@@ -31,6 +31,7 @@ const TaskSchema = new mongoose.Schema({
   }
 });
 
+TaskSchema.plugin(paginate);
 const Task = mongoose.model('Task', TaskSchema);
 
 module.exports = Task;

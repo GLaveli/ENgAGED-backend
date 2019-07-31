@@ -6,7 +6,7 @@ const ProjectSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  projectDescription: {
+  description: {
     type: String,
     required: true,
   },
@@ -29,7 +29,6 @@ const ProjectSchema = new mongoose.Schema({
   }
 
 });
-
 
 const Project = mongoose.model('Project', ProjectSchema);
 

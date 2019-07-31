@@ -20,12 +20,18 @@ function generateTolken(params = {}) {
 
 }
 
+//rota do tipo GET aberta
 router.get('/users', async (req, res) => {
 
   const { page = 1 } = req.query;
-  const users = await User.paginate({}, { page, limit: 4 })
+  const users = await User.paginate({}, { page, limit: 4 });
 
-  return res.json(users)
+  if(!users){
+    return res.status(400).send('Nem um documento encontrado');
+    
+  }
+
+  return res.json(users);
 });
 
 //Rota de registro, onde é checado no documento se o email cadastrado é existente

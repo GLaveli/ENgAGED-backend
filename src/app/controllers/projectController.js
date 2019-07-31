@@ -1,30 +1,138 @@
 const express = require('express');
 const authMiddleware = require('../middlewares/auth');
 
-const project = require('../models/project');
-const task = require('../models/task');
+const Project = require('../models/project');
+const Task = require('../models/task');
 
 const router = express.Router();
 
 router.use(authMiddleware);
 
+//esta rota busca todos os docs e retorna apenas o ID do usuario
+router.get('/allprojects', async (req, res) => {
+  try {
+
+    const { page = 1 } = req.query;
+    const projects = await Project.paginate({}, { page, limit: 4 })
+
+    return res.json(projects);
+
+  } catch (error) {
+    return res.status(400).send({ error: 'Erro ao carregar projetos' })
+  }
+});
+
+//Esta rota tras todos os projetos com os dados do usuario pupulados
 router.get('/', async (req, res) => {
-  res.send({ user: req.userId });
+  try {
+
+    const projects = await Project.find().populate(['user', 'tasks']);
+
+    return res.send({ projects });
+
+  } catch (error) {
+    return res.status(400).send({ error: 'Erro ao carregar projetos' })
+  }
 });
 
-router.get('/:projectId', async (res, send) => {
-  res.send({ user: req.userId });
+//Esta rota tras um projeto pelo seu ID
+router.get('/:projectId', async (req, res) => {
+
+  const project = await Project.findById(req.params.projectId).populate(['user', 'tasks']);
+
+  return res.send({ project });
 });
 
-router.get('/', async (req, get) => {
-  res.send({ user: req.userId });
+//Esta rota registra um projeto
+router.post('/', async (req, res) => {
+  try {
+    const { title, description, tasks } = req.body;
+
+    const project = await Project.create({ title, description, user: req.userId });
+
+    await Promise.all(tasks.map(async task => {
+      const projectTasck = new Task({ ...task, project: project._id });
+
+      await projectTasck.save();
+
+      project.tasks.push(projectTasck);
+
+    }));
+
+    await project.save();
+
+    return res.send({ project });
+
+  } catch (err) {
+    return res.status(400).send({ error: 'Erro ao criar um novo projeto ', err })
+  }
 });
 
-router.put('/:project', async (res, send) => {
-  res.send({ user: req.userId });
+//Esta rota atualiza o projeto pelo ID
+router.put('/:projectId', async (req, res) => {
+
+  try {
+    const { title, description, tasks } = req.body;
+
+    const project = await Project.findByIdAndUpdate(req.params.projectId, {
+      title,
+      description
+    }, { new: true });
+
+    project.tasks = [];
+    await Task.remove({ project: project._id });
+
+    await Promise.all(tasks.map(async task => {
+      const projectTasck = new Task({ ...task, project: project._id });
+
+      await projectTasck.save();
+
+      project.tasks.push(projectTasck);
+
+    }));
+
+    await project.save();
+
+    return res.send({ project });
+
+  } catch (err) {
+    return res.status(400).send({ error: 'Erro ao Atualizar um projeto ', err })
+  }
+
 });
 
-router.delete('/:project', async (res, send) => {
-  res.send({ user: req.userId });
+//Esta rota remove o projeto pelo ID
+router.delete('/:projectId', async (req, res) => {
+
+  try {
+
+    await Project.findByIdAndRemove(req.params.projectId);
+
+    return res.send();
+  } catch (err) {
+    return res.status(400).send({ error: 'Erro ao tentar remover: ', err })
+  }
+
 });
+
+//teste de remove alltasks -------------------------------------------------
+router.delete('/rm/:projectId', async (req, res) => {
+
+  try {
+    const { title, description, tasks } = req.body;
+
+    const project = await Project.findByIdAndRemove(req.params.projectId);
+
+    await Task.remove({ project: project._id });
+
+    return res.send('xD');
+
+  } catch (err) {
+    console.log(err);
+    
+    return res.status(400).send({ error: 'Erro ao Atualizar um projeto ', err })
+  }
+
+});
+
 module.exports = app => app.use('/projects', router);
