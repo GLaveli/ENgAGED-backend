@@ -26,12 +26,25 @@ router.get('/users', async (req, res) => {
   const { page = 1 } = req.query;
   const users = await User.paginate({}, { page, limit: 4 });
 
-  if(!users){
+  if (!users) {
     return res.status(400).send('Nem um documento encontrado');
-    
+
   }
 
   return res.json(users);
+});
+
+//rota do tipo GET aberta
+router.get('/user/:id', async (req, res) => {
+
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return res.status(400).send('Úsuario náo encontrado ou removido do sistema!')
+  }
+
+  return res.json(user);
+
 });
 
 //Rota de registro, onde é checado no documento se o email cadastrado é existente
