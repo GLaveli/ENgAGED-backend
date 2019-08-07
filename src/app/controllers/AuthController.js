@@ -35,7 +35,7 @@ router.get('/users', async (req, res) => {
 });
 
 //rota do tipo GET aberta
-router.get('/user/:id', async (req, res) => {
+router.get('/users/:id', async (req, res) => {
 
   const user = await User.findById(req.params.id);
 
