@@ -6,7 +6,8 @@ const Task = require('../models/task');
 
 const router = express.Router();
 
-router.use(authMiddleware);
+//Descomentar para utilizar um middlewarer de altenticação.
+//router.use(authMiddleware);
 
 //esta rota busca todos os docs e retorna apenas o ID do usuario
 router.get('/allprojects', async (req, res) => {
@@ -45,6 +46,9 @@ router.get('/:projectId', async (req, res) => {
 
 //Esta rota registra um projeto
 router.post('/', async (req, res) => {
+
+  await router.use(authMiddleware);
+
   try {
     const { title, description, tasks } = req.body;
 
@@ -96,7 +100,7 @@ router.put('/:projectId', async (req, res) => {
     return res.send({ project });
 
   } catch (err) {
-    return res.status(400).send({ error: 'Erro ao Atualizar um projeto ', err })
+    return res.status(400).send({ error: 'Erro ao atualizar um projeto ', err })
   }
 
 });
@@ -115,7 +119,7 @@ router.delete('/:projectId', async (req, res) => {
 
 });
 
-//teste de remove alltasks -------------------------------------------------
+//teste de remove allTasks -------------------------------------------------
 router.delete('/rm/:projectId', async (req, res) => {
 
   try {
@@ -130,7 +134,7 @@ router.delete('/rm/:projectId', async (req, res) => {
   } catch (err) {
     console.log(err);
     
-    return res.status(400).send({ error: 'Erro ao Atualizar um projeto ', err })
+    return res.status(400).send({ error: 'Erro ao remover um projeto ', err })
   }
 
 });
