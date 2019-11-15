@@ -11,7 +11,7 @@ mongoose.connection.on('disconnected', function () {
 });
 
 mongoose.connection.on('error', function (err) {
-  console.log(' Ocorreu um erro: ' + err);
+  console.log(' Ocorreu um erro no banco de dados: ' + err);
 });
 
 

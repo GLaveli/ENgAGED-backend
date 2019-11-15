@@ -15,7 +15,9 @@ router.get('/allprojects', async (req, res) => {
     const { page = 1 } = req.query;
     const projects = await Project.paginate({}, { page, limit: 4 })
 
+    console.log(projects);
     return res.json(projects);
+    
 
   } catch (error) {
     return res.status(400).send({ error: 'Erro ao carregar projetos' })
@@ -23,7 +25,7 @@ router.get('/allprojects', async (req, res) => {
 });
 
 //Esta rota tras todos os projetos com os dados do usuario pupulados
-router.get('/', async (req, res) => {
+router.get('/userprojects', async (req, res) => {
   try {
 
     const projects = await Project.find().populate(['user', 'tasks']);
@@ -36,15 +38,15 @@ router.get('/', async (req, res) => {
 });
 
 //Esta rota tras um projeto pelo seu ID
-router.get('/:projectId', async (req, res) => {
+router.get('/:id', async (req, res) => {
 
-  const project = await Project.findById(req.params.projectId).populate(['user', 'tasks']);
+  const project = await Project.findById(req.params.id).populate(['user', 'tasks']);
 
   return res.send({ project });
 });
 
 //Esta rota registra um projeto
-router.post('/', async (req, res) => {
+router.post('/newproject', async (req, res) => {
   try {
     const { title, description, tasks } = req.body;
 
@@ -69,7 +71,7 @@ router.post('/', async (req, res) => {
 });
 
 //Esta rota atualiza o projeto pelo ID
-router.put('/:projectId', async (req, res) => {
+router.put('/:id', async (req, res) => {
 
   try {
     const { title, description, tasks } = req.body;
@@ -102,7 +104,7 @@ router.put('/:projectId', async (req, res) => {
 });
 
 //Esta rota remove o projeto pelo ID
-router.delete('/:projectId', async (req, res) => {
+router.delete('/:id', async (req, res) => {
 
   try {
 
@@ -129,8 +131,8 @@ router.delete('/rm/:projectId', async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    
-    return res.status(400).send({ error: 'Erro ao Atualizar um projeto ', err })
+
+    return res.status(400).send({ error: 'Erro ao remover um projeto ', err })
   }
 
 });
