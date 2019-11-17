@@ -11,4 +11,7 @@ app.use(cors());
 
 require('./app/controllers/index')(app);
 
-app.listen(3001);
+app.get('/',(req, res) => {
+  res.send("Online");
+});
+app.listen(process.env.PORT || 3001);

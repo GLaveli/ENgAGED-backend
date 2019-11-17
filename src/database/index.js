@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://192.168.99.100:27017/engagedApp', {
+
+//Conecta o banco de dados
+mongoose.connect('mongodb+srv://deploy:Sem_senha1@cluster0-x03i0.mongodb.net/engagedApp?retryWrites=true&w=majority', {
   useCreateIndex: true,
   useNewUrlParser: true,
   useCreateIndex: true,

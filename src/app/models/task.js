@@ -25,6 +25,10 @@ const TaskSchema = new mongoose.Schema({
     required: true,
     default: false
   },
+  isPrivate: {
+    type: Boolean,
+    required: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

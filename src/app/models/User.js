@@ -27,7 +27,27 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     select: false,
   },
-  giturl: {
+  gitUserUrl: {
+    type: String,
+    required: false,
+  },
+  facebookUrl: {
+    type: String,
+    required: false,
+  },
+  twitterUrl: {
+    type: String,
+    required: false,
+  },
+  youotubeUrl: {
+    type: String,
+    required: false,
+  },
+  linkedinUrl: {
+    type: String,
+    required: false,
+  },
+  googlePlusUrl: {
     type: String,
     required: false,
   },
