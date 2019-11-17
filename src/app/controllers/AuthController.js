@@ -34,7 +34,6 @@ router.get('/users', async (req, res) => {
   return res.json(users);
 });
 
-<<<<<<< HEAD
 //Rota do tipo GET aberta para buscar um unico usuario
 router.get(async (req, res) => {
 
@@ -44,23 +43,10 @@ router.get(async (req, res) => {
 
   if (!user) {
     return res.status(400).send('Este ID não existe ou foi removido');
-=======
-//rota do tipo GET aberta
-router.get('/users/:id', async (req, res) => {
-
-  const user = await User.findById(req.params.id);
-
-  if (!user) {
-    return res.status(400).send('Úsuario náo encontrado ou removido do sistema!')
->>>>>>> d3700359cf899e0ad9cfe9238ff269fb504aa4ec
   }
 
   return res.json(user);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> d3700359cf899e0ad9cfe9238ff269fb504aa4ec
 });
 
 //Rota de registro, onde é checado no documento se o email cadastrado é existente
