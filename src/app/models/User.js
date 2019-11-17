@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    required: false,
     unique: true,
     lowercase: true
   },
@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     select: false,
   },
-  gitUserUrl: {
+  gitUrl: {
     type: String,
     required: false,
   },
