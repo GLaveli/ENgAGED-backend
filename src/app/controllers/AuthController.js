@@ -35,12 +35,10 @@ router.get('/users', async (req, res) => {
 });
 
 //Rota do tipo GET aberta para buscar um unico usuario
-router.get('/users/:id',async (req, res) => {
-
-  //const { id } = req.body;
+router.get('/users/:id', async (req, res) => {
 
   const user = await User.findById(req.params.id);
-  //const user = await User.findById({ id });
+
 
   if (!user) {
     return res.status(400).send('Este ID não existe ou foi removido');
