@@ -35,7 +35,7 @@ router.get('/users', async (req, res) => {
 });
 
 //Rota do tipo GET aberta para buscar um unico usuario
-router.get(async (req, res) => {
+router.get('/users/:id',async (req, res) => {
 
   const { id } = req.body;
 
